@@ -15,9 +15,9 @@ from pydantic import BaseModel, validator
 
 class DocumentWithConfig(Document):
     class Config:
-        arbitrary_types_allowed = True
+        arbitrary_types_allowed = True # 任意の型を許可
         json_encoders = {
-            ObjectId: str
+            ObjectId: str # ObjectIdを文字列に変換する設定
         }
 
 # usersコレクション
@@ -110,7 +110,7 @@ class Chat(DocumentWithConfig):
     _id: ObjectId
     chat_name: str = Indexed(unique=True)
     participants: List[uuid.UUID] # user_idのリスト
-    created_at: Optional[datetime] = None
+    created_at: datetime
     updated_at: Optional[datetime] = None
     messages: Optional[List["Message"]] = []
 
