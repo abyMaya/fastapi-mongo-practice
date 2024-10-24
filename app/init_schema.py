@@ -11,6 +11,13 @@ import asyncio
 
 load_dotenv()
 
+async def init_db():
+    client = AsyncIOMotorClient(os.getenv("MONGODB_URL"))
+    database = client.get_default_database()
+
+    # Beanieの初期化
+    await init_beanie(database, document_models=[CalenderEvent, Category, Chat,  CollectionList, CustomCategoryName, CustomCharacterName, CustomItem, CustomSeriesName, Image, Item, Message, SeriesCharacter, Series, User, Character, UserItem, UserSpecificData])  # ここに必要なモデルを追加
+
 async def init_schema():
     client = AsyncIOMotorClient(os.getenv("MONGODB_URL"))
     database = client.get_default_database()
