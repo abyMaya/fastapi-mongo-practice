@@ -5,6 +5,7 @@ import uuid
 from bson import ObjectId
 from motor.motor_asyncio import AsyncIOMotorClient
 from beanie import init_beanie
+from app.database.db_connection import Database
 from app.models import CalenderEvent, Category, Chat,  CollectionList, CustomCategoryName, CustomCharacterName, CustomItem, CustomSeriesName, Image, Item, Message, SeriesCharacter, Series, User, Character, UserItem, UserSpecificData
 from dotenv import load_dotenv
 import asyncio
@@ -12,15 +13,16 @@ import asyncio
 load_dotenv()
 
 async def init_db():
-    client = AsyncIOMotorClient(os.getenv("MONGODB_URL"))
-    database = client.get_default_database()
+    db = Database()
+    database = await db.connect()  # データベースに接続
 
     # Beanieの初期化
     await init_beanie(database, document_models=[CalenderEvent, Category, Chat,  CollectionList, CustomCategoryName, CustomCharacterName, CustomItem, CustomSeriesName, Image, Item, Message, SeriesCharacter, Series, User, Character, UserItem, UserSpecificData])  # ここに必要なモデルを追加
 
+
 async def init_schema():
-    client = AsyncIOMotorClient(os.getenv("MONGODB_URL"))
-    database = client.get_default_database()
+    db = Database()
+    database = await db.connect()  # データベースに接続
 
     await init_beanie(database, document_models=[CalenderEvent, Category, Chat,  CollectionList, CustomCategoryName, CustomCharacterName, CustomItem, CustomSeriesName, Image, Item, Message, SeriesCharacter, Series, User, Character, UserItem, UserSpecificData])
 
