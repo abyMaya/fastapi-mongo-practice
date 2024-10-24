@@ -12,15 +12,15 @@ import asyncio
 
 load_dotenv()
 
-async def init_db():
-    db = Database()
-    database = await db.connect()  # データベースに接続
+# async def init_db():
+#     db = Database()
+#     database = await db.connect()  # データベースに接続
 
-    # Beanieの初期化
-    await init_beanie(database, document_models=[CalenderEvent, Category, Chat,  CollectionList, CustomCategoryName, CustomCharacterName, CustomItem, CustomSeriesName, Image, Item, Message, SeriesCharacter, Series, User, Character, UserItem, UserSpecificData])  # ここに必要なモデルを追加
+#     # Beanieの初期化
+#     await init_beanie(database, document_models=[CalenderEvent, Category, Chat,  CollectionList, CustomCategoryName, CustomCharacterName, CustomItem, CustomSeriesName, Image, Item, Message, SeriesCharacter, Series, User, Character, UserItem, UserSpecificData])  # ここに必要なモデルを追加
 
 
-async def init_schema():
+async def init_schema(database):
     db = Database()
     database = await db.connect()  # データベースに接続
 

@@ -1,7 +1,6 @@
 # app/api/user.py
 from fastapi import APIRouter, FastAPI, HTTPException
 from pydantic import BaseModel
-
 from app.models import Category, Character, Item, Series, User
 
 app = FastAPI
