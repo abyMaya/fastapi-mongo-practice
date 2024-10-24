@@ -1,6 +1,6 @@
 # app/main.py
 from fastapi import FastAPI, HTTPException
-from app.database import init_db
+from app.database.database import init_db
 from app.models import Category, Item, Series, User, Character
 from app.init_schema import init_schema
 from pydantic import BaseModel
