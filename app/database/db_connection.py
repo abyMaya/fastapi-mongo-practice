@@ -5,8 +5,8 @@ from dotenv import load_dotenv
 
 class Database:
     def __init__(self):
-        self.client = None
-        self.database = None
+        self.client = None # MongoDBクライアント
+        self.database = None # デフォルトのデータベース
 
     async def connect(self):
         load_dotenv()  # 環境変数をロード
