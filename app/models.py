@@ -3,16 +3,8 @@ from typing import List, Optional
 import uuid
 from beanie import Document, Indexed
 from bson import ObjectId
-from pydantic import BaseModel, validator
 
 # PydanticがObjectId型を受け入れるようにする
-# class BaseModelWithConfig(BaseModel):
-#     class Config:
-#         arbitrary_types_allowed = True # 任意の型を許可
-#         json_encoders = {
-#             ObjectId: str  # ObjectIdを文字列に変換する設定
-#         }
-
 class DocumentWithConfig(Document):
     class Config:
         arbitrary_types_allowed = True # 任意の型を許可
@@ -65,6 +57,7 @@ class Item(DocumentWithConfig):
 
 # categoriesコレクション
 class Category(DocumentWithConfig):
+    _id: ObjectId
     category_name: str = Indexed(unique=True) # 共有グッズジャンル名
 
     class Config:
@@ -73,6 +66,7 @@ class Category(DocumentWithConfig):
 
 # # seriesコレクション
 class Series(DocumentWithConfig):
+    _id: ObjectId
     series_name: str = Indexed(unique=True)
 
     class Config:
@@ -81,6 +75,7 @@ class Series(DocumentWithConfig):
 
 # charactersコレクション
 class Character(DocumentWithConfig):
+    _id: ObjectId
     character_name: str = Indexed(unique=True)
 
     class Config:
@@ -117,9 +112,10 @@ class Chat(DocumentWithConfig):
     class Config:
         collection = "chats"
 
+# messagesコレクション
 class Message(DocumentWithConfig):
     _id: ObjectId
-    user_id: uuid.UUID # user_id
+    user_id: uuid.UUID 
     content: str
     timestamp: Optional[datetime]    
 
@@ -138,7 +134,7 @@ class UserChat(DocumentWithConfig):
 # imagesコレクション
 class Image(DocumentWithConfig):
     _id: ObjectId
-    user_id: uuid.UUID # user_id
+    user_id: uuid.UUID
     item_id: Optional[ObjectId]
     image_url: str
     created_at: Optional[datetime]
@@ -147,7 +143,7 @@ class Image(DocumentWithConfig):
     class Config:
         collection = "images"
 
-# eventsコレクション
+# calender_eventsコレクション
 class Event(DocumentWithConfig):
     _id: ObjectId
     event_name: str
@@ -157,7 +153,7 @@ class Event(DocumentWithConfig):
     created_by: uuid.UUID # user_id
     created_at: datetime
     updated_at: Optional[datetime]
-    related_series: Optional[List[ObjectId]]# series_id
+    related_series: Optional[List[ObjectId]] # series_id
     related_characters: Optional[List[ObjectId]] # character_id
 
     class Config:
@@ -216,7 +212,7 @@ class CustomCharacterName(DocumentWithConfig):
     class Config:
         collection = "custom_character_names"
 
-
+# users_itemsコレクション
 class UserItem(DocumentWithConfig):
     _id: ObjectId
     user_id: uuid.UUID
@@ -225,7 +221,7 @@ class UserItem(DocumentWithConfig):
     class Config:
         collection = "users_items"
 
-
+# calender_eventsコレクション
 class CalenderEvent(DocumentWithConfig):
     _id: ObjectId
     event_name: str
@@ -233,7 +229,7 @@ class CalenderEvent(DocumentWithConfig):
     start_datetime: Optional[datetime]
     end_datetime: Optional[datetime]
     single_date: Optional[date]
-    created_by: uuid.UUID # user_id
+    created_by: uuid.UUID
     created_at: datetime
     updated_at: Optional[datetime]
     related_series: Optional[List[ObjectId]] # series_id
