@@ -5,8 +5,9 @@ import uuid
 from bson import ObjectId
 from motor.motor_asyncio import AsyncIOMotorClient
 from beanie import init_beanie
+from app.database import database
 from app.database.db_connection import Database
-from app.models import CalenderEvent, Category, Chat,  CollectionList, CustomCategoryName, CustomCharacterName, CustomItem, CustomSeriesName, Image, Item, Message, SeriesCharacter, Series, User, Character, UserItem, UserSpecificData
+from app.models import CalenderEvent, Category, Chat,  CollectionList, CustomCategoryName, CustomCharacterName, CustomItem, CustomSeriesName, Image, Item, Message, SeriesCharacter, Series, User, Character, UserChat, UserItem, UserSpecificData
 from dotenv import load_dotenv
 import asyncio
 
@@ -24,7 +25,7 @@ async def init_schema(database):
     db = Database()
     database = await db.connect()  # データベースに接続
 
-    await init_beanie(database, document_models=[CalenderEvent, Category, Chat,  CollectionList, CustomCategoryName, CustomCharacterName, CustomItem, CustomSeriesName, Image, Item, Message, SeriesCharacter, Series, User, Character, UserItem, UserSpecificData])
+    await init_beanie(database, document_models=[CalenderEvent, Category, Chat,  CollectionList, CustomCategoryName, CustomCharacterName, CustomItem, CustomSeriesName, Image, Item, Message, SeriesCharacter, Series, User, Character, UserChat, UserItem, UserSpecificData])
 
     # 初期データを挿入
     # ユーザーを取得
@@ -35,7 +36,8 @@ async def init_schema(database):
             user_id=uuid.uuid4(),
             user_name="test_user",
             email="test@example.com",
-            password="hashed_password"
+            password="hashed_password",
+            bg_image_id=ObjectId("60d5f484a2d21a1d4cf1b0e4")
         )
 
         await test_user.insert()  # データベースにユーザーを追加
@@ -47,8 +49,8 @@ async def init_schema(database):
             custom_items=[
                 CustomItem(
                     _id=ObjectId(),
-                    item_id=ObjectId("60d5f484a2d21a1d4cf1b0e2"),
-                    custom_images=[],
+                    item_id=ObjectId("61f5f484a2d21a1d4cf1b0e6"),
+                    custom_images=[ObjectId("60d61015a2d21a1d4cf1b0eb")],
                     custom_item_name="My Test Custom Item",
                     custom_series_names=["My Test Series"],
                     custom_character_names=["My Test Character"],
@@ -106,7 +108,14 @@ async def init_schema(database):
     if not await Item.find_one({"item_name": "Test Item"}):  # Test Itemという名前のアイテムが存在しない場合
         # アイテムを作成
         test_item = Item(
-            item_name="Test Item"
+            _id=ObjectId(),
+            item_name="Test Item",
+            item_series=[ObjectId("60d5f484a2d21a1d4cf1b0e6")],
+            item_characters=[ObjectId("60d5f484a2d21a1d4cf1b0e7")],
+            category=ObjectId("60d5f484a2d21a1d4cf1b0e8"),
+            tags=["#test1", "#test2"],
+            jan_code="4991567672501",
+            retailer=["Test Shop"]
         )
         await test_item.insert()  # データベースにアイテムを追加
 
@@ -134,8 +143,8 @@ async def init_schema(database):
     if not await SeriesCharacter.find_one({"series_id": ObjectId("60d5f484a2d21a1d4cf1b0e1")}):  # Ttestseriescharacter1という作品IDが存在しない場合
         # 作品キャラクターを作成
         test_series_characters = SeriesCharacter(
-            series_id=ObjectId("60d5f484a2d21a1d4cf1b0e1"),  # ObjectIdで初期化
-            character_id=ObjectId("60d5f484a2d21a1d4cf1b0e2")  # ObjectIdで初期化
+            series_id=ObjectId("60d5f484a2d21a1d4cf1b0e6"),  # ObjectIdで初期化
+            character_id=ObjectId("60d5f484a2d21a1d4cf1b0e7")  # ObjectIdで初期化
         )
         await test_series_characters.insert()  # データベースに作品キャラクターを追加
 
@@ -162,6 +171,15 @@ async def init_schema(database):
         test_chat.messages.append(message)  # チャットにメッセージを追加
         await test_chat.save()  # 更新されたチャットを保存
 
+    if not await UserChat.find_one({"user_id": uuid.UUID("123e4567-e89b-12d3-a456-426614174000")}):
+
+        test_users_chats = UserChat(
+            _id=ObjectId(),
+            user_id=uuid.UUID("123e4567-e89b-12d3-a456-426614174000"),
+            chat_id=ObjectId("60d5f484a2d21a1d4cf1b0e9")
+        )
+        await test_users_chats.insert()
+
 
     if not await UserItem.find_one({"item_id": ObjectId("61f5f484a2d21a1d4cf1b0e6")}): 
 
@@ -170,14 +188,15 @@ async def init_schema(database):
             item_id=ObjectId("61f5f484a2d21a1d4cf1b0e6") 
         )
         await test_users_items.insert() 
+        
  
-    test_image = await Image.find_one({"image_url": "https://example.com/images/image1.jpg"}) 
+    test_image = await Image.find_one({"item_id": "61f5f484a2d21a1d4cf1b0e6"}) 
 
     if not test_image: 
         test_image = Image(
             _id=ObjectId(), 
             user_id=uuid.UUID("123e4567-e89b-12d3-a456-426614174000"), 
-            item_id=ObjectId("67179fe7e405ba2805aebca2"), 
+            item_id=ObjectId("61f5f484a2d21a1d4cf1b0e6"), 
             image_url="https://example.com/images/image1.jpg", 
             created_at=datetime.now(), 
             is_background=False 
@@ -200,11 +219,11 @@ async def init_schema(database):
             created_by=uuid.UUID("123e4567-e89b-12d3-a456-426614174000"),  # ユーザーIDをUUIDとして設定
             created_at=datetime.now(),  # 登録日時を設定
             updated_at=datetime.now(),  # 更新日時を設定
-            related_series=[ObjectId("60d5f484a2d21a1d4cf1b0e4")],  # 作品IDのリスト
-            related_characters=[ObjectId("60d5f484a2d21a1d4cf1b0e5")]  # キャラクターIDのリスト
+            related_series=[ObjectId("60d5f484a2d21a1d4cf1b0e6")],  # 作品IDのリスト
+            related_characters=[ObjectId("60d5f484a2d21a1d4cf1b0e7")]  # キャラクターIDのリスト
         )
         # イベントをデータベースに追加
         await test_calender_event.insert()
 
 if __name__ == "__main__":
-    asyncio.run(init_schema())
+    asyncio.run(init_schema(database))
