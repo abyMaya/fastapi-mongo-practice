@@ -1,6 +1,6 @@
 from datetime import date, datetime
 from typing import List, Optional
-import uuid
+# import uuid
 from beanie import Document, Indexed
 from bson import ObjectId
 
@@ -14,16 +14,16 @@ class DocumentWithConfig(Document):
 
 # usersコレクション
 class User(DocumentWithConfig):
-    id: uuid.UUID = uuid.uuid4()
+    id: ObjectId
     user_name: str = Indexed(unique=True) # unique
     email: str = Indexed(unique=True)
     password: str
     bg_image_id: Optional[ObjectId] = None
     lists: Optional[List["CollectionList"]] = []
 
-    @property
-    def id_str(self):
-        return str(self.id) # UUIDを文字列に変換
+    # @property
+    # def id_str(self):
+    #     return str(self.id) # UUIDを文字列に変換
     
     class Config:
         collection = "users"  # MongoDBのコレクション名
@@ -43,8 +43,8 @@ class Item(DocumentWithConfig):
     _id: ObjectId
     item_images: Optional[List[ObjectId]] = [] # image_idのリスト
     item_name: str = Indexed(unique=True)
-    item_series: Optional[List[ObjectId]] = [] # series_idのリスト
-    item_characters: Optional[List[ObjectId]] = [] # character_idのリスト
+    item_series: Optional[ObjectId] = None # series_idのリスト
+    item_characters: Optional[ObjectId] = None # character_idのリスト
     category: Optional[ObjectId] = None # category_id
     tags: Optional[list[str]] = []
     jan_code: Optional[str] = None
@@ -94,7 +94,7 @@ class SeriesCharacter(DocumentWithConfig):
 # users_chatsコレクション
 class UserItem(DocumentWithConfig):
     _id: ObjectId
-    user_id: uuid.UUID
+    user_id: ObjectId
     item_id: ObjectId
 
     class Config:
@@ -104,7 +104,7 @@ class UserItem(DocumentWithConfig):
 class Chat(DocumentWithConfig):
     _id: ObjectId
     chat_name: str = Indexed(unique=True)
-    participants: List[uuid.UUID] # user_idのリスト
+    participants: List[ObjectId] # user_idのリスト
     created_at: datetime
     updated_at: Optional[datetime] = None
     messages: Optional[List["Message"]] = []
@@ -115,7 +115,7 @@ class Chat(DocumentWithConfig):
 # messagesコレクション
 class Message(DocumentWithConfig):
     _id: ObjectId
-    user_id: uuid.UUID 
+    user_id: ObjectId 
     content: str
     timestamp: Optional[datetime]    
 
@@ -125,7 +125,7 @@ class Message(DocumentWithConfig):
 # users_chatsコレクション
 class UserChat(DocumentWithConfig):
     _id: ObjectId
-    user_id: uuid.UUID
+    user_id: ObjectId
     chat_id: ObjectId
 
     class Config:
@@ -134,7 +134,7 @@ class UserChat(DocumentWithConfig):
 # imagesコレクション
 class Image(DocumentWithConfig):
     _id: ObjectId
-    user_id: uuid.UUID
+    user_id: ObjectId
     item_id: Optional[ObjectId]
     image_url: str
     created_at: Optional[datetime]
@@ -150,7 +150,7 @@ class Event(DocumentWithConfig):
     event_details: Optional[str]
     start_time: datetime
     end_time: Optional[datetime]
-    created_by: uuid.UUID # user_id
+    created_by: ObjectId # user_id
     created_at: datetime
     updated_at: Optional[datetime]
     related_series: Optional[List[ObjectId]] # series_id
@@ -162,7 +162,7 @@ class Event(DocumentWithConfig):
 # user_specific_dataコレクション
 class UserSpecificData(DocumentWithConfig):
     _id: ObjectId
-    user_id: uuid.UUID
+    user_id: ObjectId
     custom_items: Optional[List["CustomItem"]]
     custom_category_names: Optional[List["CustomCategoryName"]]
     custom_series_names: Optional[List["CustomSeriesName"]]
@@ -215,7 +215,7 @@ class CustomCharacterName(DocumentWithConfig):
 # users_itemsコレクション
 class UserItem(DocumentWithConfig):
     _id: ObjectId
-    user_id: uuid.UUID
+    user_id: ObjectId
     item_id: ObjectId
 
     class Config:
@@ -229,7 +229,7 @@ class CalenderEvent(DocumentWithConfig):
     start_datetime: Optional[datetime]
     end_datetime: Optional[datetime]
     single_date: Optional[date]
-    created_by: uuid.UUID
+    created_by: ObjectId
     created_at: datetime
     updated_at: Optional[datetime]
     related_series: Optional[List[ObjectId]] # series_id
