@@ -1,7 +1,7 @@
 # app/init.py
 from datetime import datetime
 import os
-import uuid
+# import uuid
 from bson import ObjectId
 from motor.motor_asyncio import AsyncIOMotorClient
 from beanie import init_beanie
@@ -29,12 +29,12 @@ async def init_schema(database):
 
     # 初期データを挿入
     # ユーザーを取得
-    test_user = await User.find_one({"user_name": "test_user"})  # ユーザーを探す
+    test_user = await User.find_one({"user_name": "Test User"})  # ユーザーを探す
 
     if not test_user:  # ユーザーが存在しない場合
         test_user = User(
-            user_id=uuid.uuid4(),
-            user_name="test_user",
+            _id=ObjectId(),
+            user_name="Test User",
             email="test@example.com",
             password="hashed_password",
             bg_image_id=ObjectId("60d5f484a2d21a1d4cf1b0e4")
@@ -110,8 +110,8 @@ async def init_schema(database):
         test_item = Item(
             _id=ObjectId(),
             item_name="Test Item",
-            item_series=[ObjectId("60d5f484a2d21a1d4cf1b0e6")],
-            item_characters=[ObjectId("60d5f484a2d21a1d4cf1b0e7")],
+            item_series=ObjectId("60d5f484a2d21a1d4cf1b0e6"),
+            item_characters=ObjectId("60d5f484a2d21a1d4cf1b0e7"),
             category=ObjectId("60d5f484a2d21a1d4cf1b0e8"),
             tags=["#test1", "#test2"],
             jan_code="4991567672501",
@@ -153,7 +153,7 @@ async def init_schema(database):
         test_chat = Chat(
             _id=ObjectId(),  
             chat_name="test_chat", 
-            participants=[uuid.UUID("123e4567-e89b-12d3-a456-426614174000"), uuid.UUID("550e8400-e29b-41d4-a716-446655440000")],
+            participants=[ObjectId("60d61415a2d21a1d4cf1b0ec"), ObjectId("60d61525a2d21a1d4cf1b0ed")],
             created_at=datetime.now(),
             updated_at=datetime.now(),
             messages=[]  # 最初は空のメッセージリスト
@@ -163,7 +163,7 @@ async def init_schema(database):
         # メッセージの追加処理
         message = Message(
             _id=ObjectId(), 
-            user_id=uuid.UUID("123e4567-e89b-12d3-a456-426614174000"),  
+            user_id=ObjectId("60d61415a2d21a1d4cf1b0ec"),  
             content="Welcome!!",
             timestamp=datetime.now()
         )
@@ -171,11 +171,11 @@ async def init_schema(database):
         test_chat.messages.append(message)  # チャットにメッセージを追加
         await test_chat.save()  # 更新されたチャットを保存
 
-    if not await UserChat.find_one({"user_id": uuid.UUID("123e4567-e89b-12d3-a456-426614174000")}):
+    if not await UserChat.find_one({"user_id": ObjectId("60d61415a2d21a1d4cf1b0ec")}):
 
         test_users_chats = UserChat(
             _id=ObjectId(),
-            user_id=uuid.UUID("123e4567-e89b-12d3-a456-426614174000"),
+            user_id=ObjectId("60d61415a2d21a1d4cf1b0ec"),
             chat_id=ObjectId("60d5f484a2d21a1d4cf1b0e9")
         )
         await test_users_chats.insert()
@@ -184,7 +184,7 @@ async def init_schema(database):
     if not await UserItem.find_one({"item_id": ObjectId("61f5f484a2d21a1d4cf1b0e6")}): 
 
         test_users_items = UserItem(
-            user_id=uuid.UUID("123e4567-e89b-12d3-a456-426614174000"),
+            user_id=ObjectId("60d61415a2d21a1d4cf1b0ec"),
             item_id=ObjectId("61f5f484a2d21a1d4cf1b0e6") 
         )
         await test_users_items.insert() 
@@ -195,7 +195,7 @@ async def init_schema(database):
     if not test_image: 
         test_image = Image(
             _id=ObjectId(), 
-            user_id=uuid.UUID("123e4567-e89b-12d3-a456-426614174000"), 
+            user_id=ObjectId("60d61415a2d21a1d4cf1b0ec"), 
             item_id=ObjectId("61f5f484a2d21a1d4cf1b0e6"), 
             image_url="https://example.com/images/image1.jpg", 
             created_at=datetime.now(), 
@@ -216,7 +216,7 @@ async def init_schema(database):
             start_datetime=datetime(2024, 11, 25, 10, 0),  # 開始日時を設定
             end_datetime=datetime(2024, 11, 30, 23, 59),  # 終了日時を設定
             single_date=None,  # 特定の日付が必要ない場合はNone
-            created_by=uuid.UUID("123e4567-e89b-12d3-a456-426614174000"),  # ユーザーIDをUUIDとして設定
+            created_by=ObjectId("60d61415a2d21a1d4cf1b0ec"),  # ユーザーID
             created_at=datetime.now(),  # 登録日時を設定
             updated_at=datetime.now(),  # 更新日時を設定
             related_series=[ObjectId("60d5f484a2d21a1d4cf1b0e6")],  # 作品IDのリスト
