@@ -2,6 +2,7 @@
 from fastapi import APIRouter, FastAPI, HTTPException
 from pydantic import BaseModel
 from app.models import Category, Character, Item, Series, User
+from app.database.db_user import create_user
 
 app = FastAPI
 router = APIRouter()
@@ -12,10 +13,14 @@ class UserRequest(BaseModel):
     password: str
 
 @router.post("/users/")
-async def create_user(user: UserRequest):
-    user = User(**user.model_dump())
-    await user.insert()
-    return user
+async def create_user_endpoint(user_request: UserRequest):
+    user = User(**user_request.model_dump())
+
+    created_user = await create_user(user)
+    return created_user
+
+    # await user.insert()
+    # return user
 
 @router.get("/users/{user_id}")
 async def get_user(user_id: str):
