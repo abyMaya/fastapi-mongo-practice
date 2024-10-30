@@ -22,7 +22,7 @@ async def signup(user_request: UserRequest):
     # await user.insert()
     # return user
 
-@router.get("/users/{user_id}")
+@router.get("/login")
 async def get_user_endpoint(user_id: str):
     user = await get_user(user_id)
     if not user:
