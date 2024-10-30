@@ -12,8 +12,8 @@ class UserRequest(BaseModel):
     email: str
     password: str
 
-@router.post("/users/")
-async def create_user_endpoint(user_request: UserRequest):
+@router.post("/signup")
+async def signup(user_request: UserRequest):
     user = User(**user_request.model_dump())
 
     created_user = await create_user(user)
