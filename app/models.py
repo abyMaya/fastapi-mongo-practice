@@ -14,7 +14,7 @@ class DocumentWithConfig(Document):
 
 # usersコレクション
 class User(DocumentWithConfig):
-    id: ObjectId
+    _id: ObjectId
     user_name: str = Indexed(unique=True) # unique
     email: str = Indexed(unique=True)
     password: str
