@@ -2,7 +2,7 @@
 from fastapi import APIRouter, FastAPI, HTTPException
 from pydantic import BaseModel
 from app.models import Category, Character, Item, Series, User
-from app.database.db_user import create_user
+from app.database.db_user import create_user, get_user
 
 app = FastAPI
 router = APIRouter()
@@ -23,8 +23,8 @@ async def signup(user_request: UserRequest):
     # return user
 
 @router.get("/users/{user_id}")
-async def get_user(user_id: str):
-    user = await User.get(user_id)
+async def get_user_endpoint(user_id: str):
+    user = await get_user(user_id)
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
     return user
