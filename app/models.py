@@ -44,7 +44,7 @@ class Item(DocumentWithConfig):
     item_images: Optional[List[ObjectId]] = [] # image_idのリスト
     item_name: str = Indexed(unique=True)
     item_series: Optional[ObjectId] = None # series_idのリスト
-    item_characters: Optional[ObjectId] = None # character_idのリスト
+    item_character: Optional[ObjectId] = None # character_idのリスト
     category: Optional[ObjectId] = None # category_id
     tags: Optional[list[str]] = []
     jan_code: Optional[str] = None
