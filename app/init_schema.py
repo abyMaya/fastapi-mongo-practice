@@ -140,7 +140,7 @@ async def init_schema(database):
         )
         await test_character.insert()  # データベースにキャラクターを追加
 
-    if not await SeriesCharacter.find_one({"series_id": ObjectId("60d5f484a2d21a1d4cf1b0e1")}):  # Ttestseriescharacter1という作品IDが存在しない場合
+    if not await SeriesCharacter.find_one({"series_id": ObjectId("60d5f484a2d21a1d4cf1b0e6")}):  # Ttestseriescharacter1という作品IDが存在しない場合
         # 作品キャラクターを作成
         test_series_characters = SeriesCharacter(
             series_id=ObjectId("60d5f484a2d21a1d4cf1b0e6"),  # ObjectIdで初期化
