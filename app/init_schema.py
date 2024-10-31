@@ -140,7 +140,7 @@ async def init_schema(database):
         )
         await test_character.insert()  # データベースにキャラクターを追加
 
-    if not await SeriesCharacter.find_one({"series_id": ObjectId("60d5f484a2d21a1d4cf1b0e1")}):  # Ttestseriescharacter1という作品IDが存在しない場合
+    if not await SeriesCharacter.find_one({"series_id": ObjectId("60d5f484a2d21a1d4cf1b0e6")}):  # Ttestseriescharacter1という作品IDが存在しない場合
         # 作品キャラクターを作成
         test_series_characters = SeriesCharacter(
             series_id=ObjectId("60d5f484a2d21a1d4cf1b0e6"),  # ObjectIdで初期化
@@ -192,7 +192,9 @@ async def init_schema(database):
  
     test_image = await Image.find_one({"item_id": "61f5f484a2d21a1d4cf1b0e6"}) 
 
-    if not test_image: 
+    if not await Image.find_one({"image_url": str("https://example.com/images/image1.jpg")}):  
+    
+    # test_image: 
         test_image = Image(
             _id=ObjectId(), 
             user_id=ObjectId("60d61415a2d21a1d4cf1b0ec"), 
@@ -204,7 +206,7 @@ async def init_schema(database):
     try:
         await test_image.insert()  # 画像をデータベースに挿入
     except Exception as e:
-        print(f"Error inserting image: {e}")  # エラー内容を表示
+        print(f"already test_image exists: {e}")  
 
 
     # イベントが存在しない場合に新しいイベントを作成
